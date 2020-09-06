@@ -54,7 +54,7 @@ public class Main {
 
         EntityManager em = emFactory.createEntityManager();
 
-        User user = em.find(User.class, 1);
+        Usersss user = em.find(Usersss.class, 1);
         Contact contact = new Contact(null, "mobile phone", "123456789", user);
 
         em.getTransaction().begin();

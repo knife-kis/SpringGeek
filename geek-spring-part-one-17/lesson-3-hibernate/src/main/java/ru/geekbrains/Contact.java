@@ -15,12 +15,12 @@ public class Contact {
     private String description;
 
     @ManyToOne
-    private User user;
+    private Usersss user;
 
     public Contact() {
     }
 
-    public Contact(Integer id, String type, String description, User user) {
+    public Contact(Integer id, String type, String description, Usersss user) {
         this.id = id;
         this.type = type;
         this.description = description;
@@ -51,11 +51,11 @@ public class Contact {
         this.description = description;
     }
 
-    public User getUser() {
+    public Usersss getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(Usersss user) {
         this.user = user;
     }
 }
