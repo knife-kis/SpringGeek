@@ -1,6 +1,8 @@
 package ru.geekbrains.persist.repo;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -20,4 +22,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
             "where (p.title = :title or :title is null) and" +
             "      (p.price = :price or :price is null)")
     List<Product> queryByTitleAndPrice(@Param("title") String title, @Param("price") Integer price);
+
+
 }

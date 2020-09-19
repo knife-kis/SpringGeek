@@ -8,5 +8,6 @@ ru\geekbrains\persist\repo\UserRepository.class
 ru\geekbrains\persist\services\ProductsService.class
 ru\geekbrains\PersistConfig.class
 ru\geekbrains\WebInitializer.class
+ru\geekbrains\persist\utils\ProductFilter.class
 ru\geekbrains\persist\specifications\ProductsSpecifications.class
 ru\geekbrains\persist\entity\Product.class

@@ -1,10 +1,13 @@
 package ru.geekbrains.controller;
 
+import com.mysql.cj.x.protobuf.MysqlxCrud;
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +20,7 @@ import ru.geekbrains.persist.specifications.ProductsSpecifications;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/product")
@@ -31,11 +35,19 @@ public class ProductController {
     public String allProucts(Model model,
                              @RequestParam(value = "title", required = false) String title,
                              @RequestParam(value = "min_price", required = false) Integer minPrice,
-                             @RequestParam(value = "max_price", required = false) Integer maxPrice)
+                             @RequestParam(value = "max_price", required = false) Integer maxPrice,
+                             @RequestParam("page") Optional<Integer> page,
+                             @RequestParam("size") Optional<Integer> sizePage)
     {
         logger.info("Filtering by title: {} minPrice: {} maxPrice: {}", title, minPrice, maxPrice);
 
+        PageRequest pageRequest = PageRequest.of(page.orElse(1) - 1, sizePage.orElse(5));
+
         Specification<Product> spec = ProductsSpecifications.trueLiteral();
+
+        if (title != null && !title.isEmpty()){
+            spec = spec.and(ProductsSpecifications.likeTitle(title));
+        }
         if (minPrice != null){
             spec = spec.and(ProductsSpecifications.priceGreaterOrEqualsThen(minPrice));
         }
@@ -43,7 +55,7 @@ public class ProductController {
             spec = spec.and(ProductsSpecifications.priceLesserOrEqualsThan(maxPrice));
         }
 
-        model.addAttribute("products", productRepository.findAll(spec));
+        model.addAttribute("productsPage", productRepository.findAll(spec, pageRequest));
         return "products";
     }
 

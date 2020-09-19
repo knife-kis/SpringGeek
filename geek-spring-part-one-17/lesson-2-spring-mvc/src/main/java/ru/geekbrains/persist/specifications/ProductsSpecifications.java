@@ -3,12 +3,17 @@ package ru.geekbrains.persist.specifications;
 import org.springframework.data.jpa.domain.Specification;
 import ru.geekbrains.persist.entity.Product;
 
+import java.lang.ref.SoftReference;
 import java.math.BigDecimal;
 
 public class ProductsSpecifications {
 
     public static Specification<Product> trueLiteral(){
         return (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.isTrue(criteriaBuilder.literal(true));
+    }
+
+    public static Specification<Product> likeTitle(String title){
+        return (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.like(root.get("title"), "%" + title + "%");
     }
 
     public static Specification<Product> priceGreaterOrEqualsThen(Integer minPrice){
