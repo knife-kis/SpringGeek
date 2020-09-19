@@ -1,0 +1,12 @@
+ru\geekbrains\persist\entity\User.class
+ru\geekbrains\AppConfig.class
+ru\geekbrains\controller\ProductController.class
+ru\geekbrains\controller\UserController.class
+ru\geekbrains\persist\repo\ProductRepository.class
+ru\geekbrains\exceptions\ProductNotFoundException.class
+ru\geekbrains\persist\repo\UserRepository.class
+ru\geekbrains\persist\services\ProductsService.class
+ru\geekbrains\PersistConfig.class
+ru\geekbrains\WebInitializer.class
+ru\geekbrains\persist\specifications\ProductsSpecifications.class
+ru\geekbrains\persist\entity\Product.class
