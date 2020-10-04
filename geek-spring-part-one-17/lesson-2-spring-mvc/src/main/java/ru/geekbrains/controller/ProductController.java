@@ -1,20 +1,26 @@
 package ru.geekbrains.controller;
 
+import com.mysql.cj.x.protobuf.MysqlxCrud;
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.geekbrains.persist.entity.Product;
 import ru.geekbrains.persist.repo.ProductRepository;
+import ru.geekbrains.persist.specifications.ProductsSpecifications;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/product")
@@ -26,39 +32,32 @@ public class ProductController {
     private ProductRepository productRepository;
 
     @GetMapping
-    public String allProucts(Model model, @RequestParam(value = "title", required = false) String title) {
-        logger.info("Filtering by title: {}", title);
+    public String allProucts(Model model,
+                             @RequestParam(value = "title", required = false) String title,
+                             @RequestParam(value = "min_price", required = false) Integer minPrice,
+                             @RequestParam(value = "max_price", required = false) Integer maxPrice,
+                             @RequestParam("page") Optional<Integer> page,
+                             @RequestParam("size") Optional<Integer> sizePage)
+    {
+        logger.info("Filtering by title: {} minPrice: {} maxPrice: {}", title, minPrice, maxPrice);
 
-        List<Product> allProduct;
-        if (title == null || title.isEmpty()) {
-            allProduct = productRepository.findAll();
-        } else {
-            allProduct = productRepository.findByTitleLike("%" + title + "%");
+        PageRequest pageRequest = PageRequest.of(page.orElse(1) - 1, sizePage.orElse(5));
+
+        Specification<Product> spec = ProductsSpecifications.trueLiteral();
+
+        if (title != null && !title.isEmpty()){
+            spec = spec.and(ProductsSpecifications.likeTitle(title));
         }
-        model.addAttribute("products", allProduct);
+        if (minPrice != null){
+            spec = spec.and(ProductsSpecifications.priceGreaterOrEqualsThen(minPrice));
+        }
+        if (maxPrice != null){
+            spec = spec.and(ProductsSpecifications.priceLesserOrEqualsThan(maxPrice));
+        }
+
+        model.addAttribute("productsPage", productRepository.findAll(spec, pageRequest));
         return "products";
     }
-
-//    @GetMapping
-//    public String showProductsPageByPage(Model model, @RequestParam(name = "p", defaultValue = "1") int pageNumber){
-//        if(pageNumber < 1){
-//            pageNumber = 1;
-//        }
-//        List<Product> products = productRepository.findByPage(pageNumber - 1, 10).getContent();
-//        model.addAttribute("prodicts", products);
-//        return "products";
-//    }
-//    @GetMapping
-//    public String allProuctsWithMaxPrice(Model model, @RequestParam(value = "cost",defaultValue = "0",required = false) int cost) {
-//        logger.info("Filtering by price: {}", cost);
-//
-//        List<Product> allProuctsWithMaxPrice;
-//
-//            allProuctsWithMaxPrice = productRepository.findAllByCostGreaterThan(cost);
-//
-//        model.addAttribute("products", allProuctsWithMaxPrice);
-//        return "products";
-//    }
 
     @GetMapping("/{id}")
     public String editProducts(@PathVariable("id") Integer id, Model model) {

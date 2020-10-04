@@ -15,15 +15,15 @@ public class Product {
     private String title;
 
     @Column
-    private BigDecimal cost;
+    private Integer price;
 
     public Product() {
     }
 
-    public Product(Integer id, String title, BigDecimal cost) {
+    public Product(Integer id, String title, Integer price) {
         this.id = id;
         this.title = title;
-        this.cost = cost;
+        this.price = price;
     }
 
     public Integer getId() {
@@ -42,11 +42,11 @@ public class Product {
         this.title = title;
     }
 
-    public BigDecimal getCost() {
-        return cost;
+    public Integer getPrice() {
+        return price;
     }
 
-    public void setCost(BigDecimal cost) {
-        this.cost = cost;
+    public void setPrice(Integer price) {
+        this.price = price;
     }
 }
