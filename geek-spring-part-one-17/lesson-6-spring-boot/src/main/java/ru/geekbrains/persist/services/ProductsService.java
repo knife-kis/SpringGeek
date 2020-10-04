@@ -38,4 +38,15 @@ public class ProductsService {
         }
         return productsRepository.findAll(spec, PageRequest.of(page - 1, 5));
     }
+
+    public void deleteProduct(Product product){
+        productsRepository.delete(product);
+    }
+    public void deleteById(int id) {
+        productsRepository.deleteById(id);
+    }
+
+    public boolean existsById(int id) {
+        return productsRepository.existsById(id);
+    }
 }

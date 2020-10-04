@@ -49,14 +49,14 @@
                 <label>maxPrice</label>
                 <input type="number" th:value="${param.max_price != null ? param.max_price : ''}" name="max_price"/>
 
-
                 <button class="btn btn-primary" type="submit">Filter</button>
+                <a role="button" th:href="@{'/product'}" class="btn btn-danger">off Filter</a>
             </form>
-            <form>
-                <input type="hidden"  th:value="${param}"/>
+            <!--            <form>-->
+            <!--                <input type="hidden"  th:value="${param}"/>-->
 
-                <button class="btn btn-primary" type="submit">Off Filter</button>
-            </form>
+            <!--                <button class="btn btn-primary" type="submit">Off Filter</button>-->
+            <!--            </form>-->
         </div>
 
 
@@ -76,8 +76,10 @@
                     <td th:text="${product.title}">Product title</td>
                     <td th:text="${product.price}">Product price</td>
                     <td>
-                        <a class="btn btn-success" th:href="@{/product/{id}(id = ${product.id})}"><i class="fas fa-edit"></i></a>
-                        <form class="d-inline" th:action="@{/product/{id}/delete(id = ${product.id})}" th:method="delete">
+                        <a class="btn btn-success" th:href="@{/product/{id}(id = ${product.id})}"><i
+                                class="fas fa-edit"></i></a>
+                        <form class="d-inline" th:action="@{/product/{id}/delete(id = ${product.id})}"
+                              th:method="delete">
                             <button type="submit" class="btn btn-danger"><i class="far fa-trash-alt"></i></button>
                         </form>
                     </td>
@@ -88,18 +90,25 @@
         <div class="col-12">
             <nav aria-label="...">
                 <ul class="pagination">
-                    <li class="page-item">
+                    <li class="page-item" th:classappend="${productsPage.isFirst() ? 'disabled' : ''}">
                         <a class="page-link"
                            th:href="@{'/product/?page=' + ${productsPage.previousOrFirstPageable().getPageNumber() + 1} + ${filterDef}}">Previous</a>
                     </li>
-                    <li th:each="num: ${#numbers.sequence(1, productsPage.totalPages)}"
-                        class="page-item"
-                        th:classappend="${productsPage.number + 1 == num ? 'active' : ''}">
+                    <li
+                            class="page-item"
+                            th:classappend="${productsPage.number + 1 == num ? 'active' : ''}"
+                            th:each="num :${#numbers.sequence(
+                            (productsPage.getNumber() + 1 > 2
+                            ? productsPage.getNumber() - 1
+                            : 1),
+                            (productsPage.getNumber() + 3 < productsPage.getTotalPages()
+                            ? productsPage.getNumber() + 3
+                            : productsPage.getTotalPages()))}">
                         <a class="page-link"
                            th:text="${num} " th:href="@{'/product/?page=' + ${num} + ${filterDef}}"></a>
                         <!--th:text="${num}"th:href="@{product(page=${num}, size=${productsPage.size}, title = ${param.title}, price = ${param.price})}">1</a>-->
-                    </li >
-                    <li class="page-item">
+                    </li>
+                    <li class="page-item" th:classappend="${productsPage.isLast() ? 'disabled' : ''}">
                         <a class="page-link"
                            th:href="@{'/product/?page=' + ${productsPage.nextOrLastPageable().getPageNumber() + 1} + ${filterDef}}">Next</a>
                     </li>

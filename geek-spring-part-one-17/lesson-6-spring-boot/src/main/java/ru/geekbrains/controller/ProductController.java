@@ -26,6 +26,7 @@ public class ProductController {
 
     private final static Logger logger = LoggerFactory.getLogger(ProductController.class);
     private ProductsService productsService;
+
     @Autowired
     public ProductController(ProductsService productsService) {
         this.productsService = productsService;
@@ -34,8 +35,7 @@ public class ProductController {
 
     @GetMapping
     public String allProucts(Model model,
-                             @RequestParam Map<String, String> requestParams)
-    {
+                             @RequestParam Map<String, String> requestParams) {
         Integer pageNumber = Integer.parseInt(requestParams.getOrDefault("page", "1"));
         ProductFilter productFilter = new ProductFilter(requestParams);
 
@@ -72,9 +72,9 @@ public class ProductController {
         return "redirect:/product";
     }
 
-//    @DeleteMapping("/{id}/delete")
-//    public String deleteProduct(@PathVariable("id") Integer id) {
-//        productRepository.deleteById(id);
-//        return "redirect:/product";
-//    }
+    @DeleteMapping("/{id}/delete")
+    public String deleteProduct(@PathVariable("id") Integer id) {
+        productsService.deleteProduct(productsService.findById(id));
+        return "redirect:/product";
+    }
 }

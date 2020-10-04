@@ -12,10 +12,4 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer>, JpaSpecificationExecutor<Product> {
 
-    @Query("from Product p " +
-            "where (p.title = :title or :title is null) and" +
-            "      (p.price = :price or :price is null)")
-    List<Product> queryByTitleAndPrice(@Param("title") String title, @Param("price") Integer price);
-
-
 }
