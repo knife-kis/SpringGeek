@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"/>
+    <title>EShop application</title>
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div th:replace="~{navigation :: navigation(Equipment)}" />
+</nav>
+
+<div class="container">
+    <div class="row py-2">
+        <div class="col-12">
+            <a class="btn btn-primary" th:href="@{/equipment/new}">Add Equipment</a>
+        </div>
+
+        <div class="col-12 mt-3">
+            <form>
+                <label>Title</label>
+                <input type="text" name="name" id="name" th:value="${param.name}"/>
+                <button class="btn btn-primary" type="submit">Filter</button>
+                <a role="button" th:href="@{'/equipment'}" class="btn btn-danger">off Filter</a>
+            </form>
+        </div>
+
+
+        <div class="col-12">
+            <table class="table table-bordered my-2">
+                <thead>
+                <tr>
+                    <th scope="col">id</th>
+                    <th scope="col">Инвентарный номер</th>
+                    <th scope="col">Год ввода в эксплуатацию</th>
+                    <th scope="col">Наименование, тип прибора</th>
+                    <th scope="col">Заводской номер</th>
+                    <th scope="col">Номер Свидетельства о поверки</th>
+                    <th scope="col">Дата очередной поверки</th>
+                    <th scope="col">Добавление/Удаление</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="equipment : ${equipmentsPage.content}">
+                    <th scope="row" th:text="${equipment.id}">1</th>
+                    <td th:text="${equipment.inventoryNumber}">inventoryNumber</td>
+                    <td th:text="${equipment.yearOfCommissioning}">yearOfCommissioning</td>
+                    <td th:text="${equipment.name}">name</td>
+                    <td th:text="${equipment.factoryNumber}">factoryNumber</td>
+                    <td th:text="${equipment.verificationNumber}">verificationNumber</td>
+                    <td th:text="${#dates.format(equipment.verificationDate, 'dd-MM-yyyy')}">dd-MM-yyyy</td>
+                    <td>
+                        <a class="btn btn-success" th:href="@{/equipment/{id}(id = ${equipment.id})}"><i
+                                class="fas fa-edit"></i></a>
+                        <form class="d-inline" th:action="@{/equipment/{id}/delete(id = ${equipment.id})}"
+                              th:method="delete">
+                            <button type="submit" class="btn btn-danger"><i class="far fa-trash-alt"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-12">
+            <nav aria-label="...">
+                <ul class="pagination">
+                    <li class="page-item" th:classappend="${equipmentsPage.isFirst() ? 'disabled' : ''}">
+                        <a class="page-link"
+                           th:href="@{'/equipment/?page=' + ${equipmentsPage.previousOrFirstPageable().getPageNumber() + 1} + ${filterDef}}">Previous</a>
+                    </li>
+                    <li
+                            class="page-item"
+                            th:classappend="${equipmentsPage.number + 1 == num ? 'active' : ''}"
+                            th:each="num :${#numbers.sequence(
+                            (equipmentsPage.getNumber() + 1 > 2
+                            ? equipmentsPage.getNumber() - 1
+                            : 1),
+                            (equipmentsPage.getNumber() + 3 < equipmentsPage.getTotalPages()
+                            ? equipmentsPage.getNumber() + 3
+                            : equipmentsPage.getTotalPages()))}">
+                        <a class="page-link"
+                           th:text="${num} " th:href="@{'/equipment/?page=' + ${num} + ${filterDef}}"></a>
+                    </li>
+                    <li class="page-item" th:classappend="${equipmentsPage.isLast() ? 'disabled' : ''}">
+                        <a class="page-link"
+                           th:href="@{'/equipment/?page=' + ${equipmentsPage.nextOrLastPageable().getPageNumber() + 1} + ${filterDef}}">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>
